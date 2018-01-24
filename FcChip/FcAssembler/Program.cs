@@ -36,7 +36,7 @@ namespace FcAssembler {
 
                 var assembler = new ChipAssembler();
                 var program = assembler.AssembleProgram(sourceLines);
-                var outputFile = options.outputFile ?? $"{Path.GetFileNameWithoutExtension(inputFile)}.fc";
+                var outputFile = options.outputFile ?? $"{Path.GetFileNameWithoutExtension(inputFile)}.ch";
 
                 using (var bw = new BinaryWriter(File.Create(outputFile))) {
                     bw.Write(program);

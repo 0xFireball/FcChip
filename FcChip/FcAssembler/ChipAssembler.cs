@@ -44,11 +44,11 @@ namespace FcAssembler {
                 case FcOpCode.Mov: {
                     switch (instruction.operands[0]) {
                         case RegisterOperand registerOperand:
-                            result.Add((byte) FcInternalOpCode.CmpR);
+                            result.Add((byte) FcInternalOpCode.MovR);
                             result.Add((byte) registerOperand.register);
                             break;
                         case ValueOperand valueOperand:
-                            result.Add((byte) FcInternalOpCode.CmpV);
+                            result.Add((byte) FcInternalOpCode.MovV);
                             result.Add((byte) valueOperand.value);
                             break;
                         default:
