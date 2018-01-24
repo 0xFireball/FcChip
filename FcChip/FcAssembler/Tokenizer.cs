@@ -10,7 +10,9 @@ namespace FcAssembler {
             var program = new List<ProgramNode>();
             for (var i = 0; i < programSource.Count; i++) {
                 var line = programSource[i];
-                var segments = line.Split(' ');
+                var codePortion = line.Split(';')[0]; // ignore comments
+                codePortion = codePortion.Trim(); // ignore whitespace
+                var segments = codePortion.Split(' ');
                 try {
                     var node = ParseLine(segments);
                     program.Add(node);
@@ -27,7 +29,7 @@ namespace FcAssembler {
 
             if (literal.StartsWith(":")) {
                 // it is a label
-                return new Label(literal.Substring(1));
+                return new LabelNode(literal.Substring(1));
             }
 
             var operands = ParseOperands(segments);
@@ -43,33 +45,34 @@ namespace FcAssembler {
             var operands = new List<Operand>();
             for (var i = 1; i < segments.Length; i++) {
                 var literal = segments[i];
-                if (Enum.TryParse(typeof(FcRegister), literal, out var register)) {
+                
+                if (ushort.TryParse(literal, out var value)) {
+                    operands.Add(new ValueOperand(value));
+                    continue;
+                }
+                
+                if (Enum.TryParse(typeof(FcRegister), literal, true, out var register)) {
                     operands.Add(new RegisterOperand((FcRegister) register));
-                    break;
+                    continue;
                 }
 
                 if (literal.StartsWith(":")) {
                     operands.Add(new LabelOperand(literal.Substring(1)));
-                    break;
+                    continue;
                 }
 
                 if (literal.StartsWith("@")) {
                     if (ushort.TryParse(literal.Substring(1), out var address)) {
                         operands.Add(new AddressOperand(address));
-                        break;
                     }
+                    continue;
                 }
 
                 if (literal.StartsWith("$")) {
                     if (ushort.TryParse(literal.Substring(1), NumberStyles.HexNumber, null, out var fromHexValue)) {
                         operands.Add(new ValueOperand(fromHexValue));
-                        break;
+                        continue;
                     }
-                }
-
-                if (ushort.TryParse(literal, out var value)) {
-                    operands.Add(new ValueOperand(value));
-                    break;
                 }
             }
 

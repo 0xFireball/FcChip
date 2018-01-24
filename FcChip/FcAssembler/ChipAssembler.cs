@@ -1,36 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using FcAssembler.Tokens;
 using FcChip;
 
 namespace FcAssembler {
     public class ChipAssembler {
-        private Dictionary<string, ushort> labels;
+        private Dictionary<string, ushort> labels = new Dictionary<string, ushort>();
 
         public byte[] AssembleProgram(List<string> sourceLines) {
             var tokenizer = new Tokenizer();
             var programNodes = tokenizer.Tokenize(sourceLines);
 
             // emit code
+            var outputProgram = new MemoryStream();
 
-            ushort offset = 0;
-            for (var i = 0; i < programNodes.Count; i++) {
-                var node = programNodes[i];
-
-                if (node is Label) {
-                    labels[((Label) node).name] = offset;
-                }
-
-                if (node is Instruction) {
-                    var emit = EmitInstruction((Instruction) node);
-                    offset += (ushort) emit.Count;
+            using (var bw = new BinaryWriter(outputProgram)) {
+                ushort offset = 0;
+                foreach (var node in programNodes) {
+                    switch (node) {
+                        case LabelNode label:
+                            labels[label.name] = offset;
+                            break;
+                        case Instruction instr:
+                            var emit = EmitInstruction(instr);
+                            bw.Write(emit);
+                            offset += (ushort) emit.Length;
+                            break;
+                    }
                 }
             }
 
-            return new byte[0];
+            return outputProgram.ToArray();
         }
 
-        public List<byte> EmitInstruction(Instruction instruction) {
+        public byte[] EmitInstruction(Instruction instruction) {
             var result = new List<byte>();
             switch (instruction.opCode) {
                 case FcOpCode.Nop: {
@@ -135,7 +139,7 @@ namespace FcAssembler {
                 }
             }
 
-            return result;
+            return result.ToArray();
         }
 
         public class AssemblerException : Exception {

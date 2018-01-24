@@ -10,4 +10,7 @@
       <Name>FcChip</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.2.1" />
+  </ItemGroup>
 </Project>

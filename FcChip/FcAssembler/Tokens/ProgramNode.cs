@@ -1,8 +1,8 @@
 ﻿namespace FcAssembler.Tokens {
     public abstract class ProgramNode { }
 
-    public class Label : ProgramNode {
-        public Label(string name) {
+    public class LabelNode : ProgramNode {
+        public LabelNode(string name) {
             this.name = name;
         }
 
