@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FcChip", "FcChip\FcChip.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FcChipTool", "FcChipTool\FcChipTool.csproj", "{8B9F6BF9-4137-4692-8EE9-D2E2C5A349BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FcAssembler", "FcAssembler\FcAssembler.csproj", "{3F126EF2-3C58-45AD-BD02-BBF21D78AC58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{8B9F6BF9-4137-4692-8EE9-D2E2C5A349BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B9F6BF9-4137-4692-8EE9-D2E2C5A349BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B9F6BF9-4137-4692-8EE9-D2E2C5A349BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F126EF2-3C58-45AD-BD02-BBF21D78AC58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F126EF2-3C58-45AD-BD02-BBF21D78AC58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F126EF2-3C58-45AD-BD02-BBF21D78AC58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F126EF2-3C58-45AD-BD02-BBF21D78AC58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
