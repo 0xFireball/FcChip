@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using FcAssembler.Tokens;
 using FcChip;
 
@@ -55,6 +56,13 @@ namespace FcAssembler {
                 if (literal.StartsWith("@")) {
                     if (ushort.TryParse(literal.Substring(1), out var address)) {
                         operands.Add(new AddressOperand(address));
+                        break;
+                    }
+                }
+
+                if (literal.StartsWith("$")) {
+                    if (ushort.TryParse(literal.Substring(1), NumberStyles.HexNumber, null, out var fromHexValue)) {
+                        operands.Add(new ValueOperand(fromHexValue));
                         break;
                     }
                 }
