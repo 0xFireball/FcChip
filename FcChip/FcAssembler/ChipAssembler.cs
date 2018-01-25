@@ -6,7 +6,8 @@ using FcChip;
 
 namespace FcAssembler {
     public class ChipAssembler {
-        private Dictionary<string, ushort> labels = new Dictionary<string, ushort>();
+        private Dictionary<string, ushort> labelSymbols = new Dictionary<string, ushort>(); // name, offset
+        private Dictionary<string, ushort> fwLabels = new Dictionary<string, ushort>(); // referenced name, position
 
         public byte[] AssembleProgram(List<string> sourceLines) {
             var tokenizer = new Tokenizer();
@@ -20,7 +21,7 @@ namespace FcAssembler {
                 foreach (var node in programNodes) {
                     switch (node) {
                         case LabelNode label:
-                            labels[label.name] = offset;
+                            labelSymbols[label.name] = offset;
                             break;
                         case Instruction instr:
                             var emit = EmitInstruction(instr);
@@ -124,7 +125,7 @@ namespace FcAssembler {
 
                     switch (instruction.operands[0]) {
                         case LabelOperand labelOperand:
-                            var labelAddress = BitConverter.GetBytes(labels[labelOperand.label]);
+                            var labelAddress = BitConverter.GetBytes(labelSymbols[labelOperand.label]);
                             result.Add(labelAddress[0]);
                             result.Add(labelAddress[1]);
                             break;
