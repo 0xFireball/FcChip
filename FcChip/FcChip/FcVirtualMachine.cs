@@ -67,7 +67,7 @@ namespace FcChip {
         }
 
         public void Execute() {
-            while (programStream.Position < programStream.Length) {
+            while (programStream.Position < programStream.Length - 1) {
                 programStream.Position = registers.Get(FcRegister.C);
                 var opCodeByte = (byte) programStream.ReadByte();
                 if (!Enum.IsDefined(typeof(FcInternalOpCode), opCodeByte)) {
@@ -86,6 +86,8 @@ namespace FcChip {
             var readOffset = 0;
             switch (opCode) {
                 case FcInternalOpCode.Nop:
+                    break;
+                case FcInternalOpCode.Slp:
                     break;
                 case FcInternalOpCode.MovR: {
                     var srcReg = (FcRegister) (byte) programStream.ReadByte();
@@ -197,7 +199,7 @@ namespace FcChip {
                         registers.Set(FcRegister.C, jmpAddress);
                         readOffset = -1;
                     } else {
-                        readOffset = 2;
+                        readOffset = 3;
                     }
 
                     break;
@@ -210,7 +212,7 @@ namespace FcChip {
                         registers.Set(FcRegister.C, jmpAddress);
                         readOffset = -1;
                     } else {
-                        readOffset = 2;
+                        readOffset = 3;
                     }
 
                     break;

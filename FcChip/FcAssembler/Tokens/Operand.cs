@@ -10,6 +10,10 @@ namespace FcAssembler.Tokens {
         }
 
         public FcRegister register;
+
+        public override string ToString() {
+            return register.ToString().ToLower();
+        }
     }
 
     public class ValueOperand : Operand {
@@ -19,6 +23,10 @@ namespace FcAssembler.Tokens {
         }
 
         public ushort value;
+
+        public override string ToString() {
+            return value.ToString();
+        }
     }
 
     public class LabelOperand : Operand {
@@ -28,6 +36,10 @@ namespace FcAssembler.Tokens {
         }
 
         public string label;
+
+        public override string ToString() {
+            return $":{label}";
+        }
     }
 
     public class AddressOperand : Operand {
@@ -37,5 +49,9 @@ namespace FcAssembler.Tokens {
         }
 
         public ushort address;
+
+        public override string ToString() {
+            return address.ToString();
+        }
     }
 }

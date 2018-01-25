@@ -13,5 +13,9 @@ namespace FcAssembler.Tokens {
 
         public FcOpCode opCode;
         public List<Operand> operands;
+
+        public override string ToString() {
+            return $" {opCode.ToString().ToLower()} {string.Join(" ", operands)}";
+        }
     }
 }

@@ -7,7 +7,11 @@ using FcChip;
 namespace FcAssembler {
     public class ChipAssembler {
         private Dictionary<string, ushort> labelSymbols = new Dictionary<string, ushort>(); // name, offset
-        private Dictionary<string, ushort> fwLabels = new Dictionary<string, ushort>(); // referenced name, position
+
+        private List<KeyValuePair<string, ushort>>
+            fwLabels = new List<KeyValuePair<string, ushort>>(); // referenced name, position
+
+        private ushort offset = 0;
 
         public byte[] AssembleProgram(List<string> sourceLines) {
             var tokenizer = new Tokenizer();
@@ -17,7 +21,7 @@ namespace FcAssembler {
             var outputProgram = new MemoryStream();
 
             using (var bw = new BinaryWriter(outputProgram)) {
-                ushort offset = 0;
+                offset = 0;
                 foreach (var node in programNodes) {
                     switch (node) {
                         case LabelNode label:
@@ -32,7 +36,16 @@ namespace FcAssembler {
                 }
             }
 
-            return outputProgram.ToArray();
+            var programBytes = outputProgram.ToArray();
+
+            // replace forward symbols
+            foreach (var fwLabel in fwLabels) {
+                var labelAddress = BitConverter.GetBytes(labelSymbols[fwLabel.Key]);
+                programBytes[fwLabel.Value] = labelAddress[0];
+                programBytes[fwLabel.Value + 1] = labelAddress[1];
+            }
+
+            return programBytes;
         }
 
         public byte[] EmitInstruction(Instruction instruction) {
@@ -40,6 +53,10 @@ namespace FcAssembler {
             switch (instruction.opCode) {
                 case FcOpCode.Nop: {
                     result.Add((byte) FcInternalOpCode.Nop);
+                    break;
+                }
+                case FcOpCode.Slp: {
+                    result.Add((byte) FcInternalOpCode.Slp);
                     break;
                 }
                 case FcOpCode.Mov: {
@@ -62,10 +79,6 @@ namespace FcAssembler {
                         throw new AssemblerException("expected R operand");
                     }
 
-                    break;
-                }
-                case FcOpCode.Slp: {
-                    result.Add((byte) FcInternalOpCode.Slp);
                     break;
                 }
                 case FcOpCode.Add:
@@ -94,8 +107,9 @@ namespace FcAssembler {
                     break;
                 }
                 case FcOpCode.Cmp: {
+                    var testReg = -1;
                     if (instruction.operands[0] is RegisterOperand sourceRegisterOperand) {
-                        result.Add((byte) sourceRegisterOperand.register);
+                        testReg = (byte) sourceRegisterOperand.register;
                     } else {
                         throw new AssemblerException("expected R operand");
                     }
@@ -103,10 +117,12 @@ namespace FcAssembler {
                     switch (instruction.operands[1]) {
                         case RegisterOperand registerOperand:
                             result.Add((byte) FcInternalOpCode.CmpR);
+                            result.Add((byte) testReg);
                             result.Add((byte) registerOperand.register);
                             break;
                         case ValueOperand valueOperand:
                             result.Add((byte) FcInternalOpCode.CmpV);
+                            result.Add((byte) testReg);
                             result.Add((byte) valueOperand.value);
                             break;
                         default:
@@ -125,9 +141,10 @@ namespace FcAssembler {
 
                     switch (instruction.operands[0]) {
                         case LabelOperand labelOperand:
-                            var labelAddress = BitConverter.GetBytes(labelSymbols[labelOperand.label]);
-                            result.Add(labelAddress[0]);
-                            result.Add(labelAddress[1]);
+                            fwLabels.Add(new KeyValuePair<string, ushort>(labelOperand.label,
+                                (ushort) (offset + result.Count)));
+                            result.Add(0);
+                            result.Add(0);
                             break;
                         case AddressOperand addressOperand:
                             var address = BitConverter.GetBytes(addressOperand.address);
