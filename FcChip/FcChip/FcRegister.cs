@@ -9,6 +9,7 @@
         C = 0xA5, // Program counter register
         
         // flags
-        E = 0xA8
+        E = 0xA8,
+        L = 0xA9,
     }
 }

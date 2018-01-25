@@ -25,7 +25,7 @@ namespace FcChipTool {
             var vm = new FcVirtualMachine();
             vm.LoadProgram(inputStream);
             vm.Execute();
-            
+
             return 0;
         }
     }

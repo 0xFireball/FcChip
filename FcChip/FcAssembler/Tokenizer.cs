@@ -12,6 +12,11 @@ namespace FcAssembler {
                 var line = programSource[i];
                 var codePortion = line.Split(';')[0]; // ignore comments
                 codePortion = codePortion.Trim(); // ignore whitespace
+                codePortion = codePortion.Replace(",", ""); // delete commas
+                if (string.IsNullOrWhiteSpace(codePortion)) {
+                    continue;
+                }
+
                 var segments = codePortion.Split(' ');
                 try {
                     var node = ParseLine(segments);
@@ -27,13 +32,12 @@ namespace FcAssembler {
         private ProgramNode ParseLine(string[] segments) {
             var literal = segments[0];
 
-            if (literal.StartsWith(":")) {
+            if (literal.EndsWith(":")) {
                 // it is a label
-                return new LabelNode(literal.Substring(1));
+                return new LabelNode(literal.Substring(0, literal.Length - 1));
             }
 
             var operands = ParseOperands(segments);
-            Instruction instruction;
             if (Enum.TryParse(typeof(FcOpCode), literal, true, out var opCode)) {
                 return new Instruction((FcOpCode) opCode, operands);
             } else {
@@ -45,12 +49,12 @@ namespace FcAssembler {
             var operands = new List<Operand>();
             for (var i = 1; i < segments.Length; i++) {
                 var literal = segments[i];
-                
+
                 if (ushort.TryParse(literal, out var value)) {
                     operands.Add(new ValueOperand(value));
                     continue;
                 }
-                
+
                 if (Enum.TryParse(typeof(FcRegister), literal, true, out var register)) {
                     operands.Add(new RegisterOperand((FcRegister) register));
                     continue;
@@ -65,6 +69,7 @@ namespace FcAssembler {
                     if (ushort.TryParse(literal.Substring(1), out var address)) {
                         operands.Add(new AddressOperand(address));
                     }
+
                     continue;
                 }
 

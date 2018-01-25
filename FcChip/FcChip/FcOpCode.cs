@@ -11,6 +11,9 @@
         Sub, // sub R/V
         Mul, // mul R/V
         
+        Shl, // shl R/V
+        Shr, // shr R/V
+        
         // Logical instructions
         Cmp, // cmp R R/V, sets E flag if equal
         
@@ -34,6 +37,11 @@
         SubV = 0x24,
         MulR = 0x25,
         MulV = 0x26,
+        
+        ShlR = 0x27,
+        ShlV = 0x28,
+        ShrR = 0x29,
+        ShrV = 0x2A,
         
         // Logical instructions
         CmpR = 0x31,

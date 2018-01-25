@@ -69,7 +69,9 @@ namespace FcAssembler {
                 }
                 case FcOpCode.Add:
                 case FcOpCode.Sub:
-                case FcOpCode.Mul: {
+                case FcOpCode.Mul:
+                case FcOpCode.Shl:
+                case FcOpCode.Shr: {
                     var opCodeStr = instruction.opCode.ToString();
                     switch (instruction.operands[0]) {
                         case RegisterOperand registerOperand: {
