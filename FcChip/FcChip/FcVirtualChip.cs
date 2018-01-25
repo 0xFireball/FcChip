@@ -2,8 +2,16 @@
 using System.IO;
 
 namespace FcChip {
-    public class FcVirtualMachine {
+    public class FcVirtualChip {
         private Stream programStream;
+
+        public enum State {
+            Ready,
+            Running,
+            Stopped
+        }
+
+        public State state { get; private set; } = State.Stopped;
 
         public class Registers {
             public ushort A;
@@ -52,7 +60,7 @@ namespace FcChip {
             }
         }
 
-        public FcVirtualMachine() {
+        public FcVirtualChip() {
             Initialize();
         }
 
@@ -60,15 +68,17 @@ namespace FcChip {
 
         public void Initialize() {
             registers = new Registers();
+            state = State.Ready;
         }
 
         public void LoadProgram(Stream programStream) {
             this.programStream = programStream;
         }
 
-        public void Execute() {
+        public void Tick() {
             programStream.Position = registers.Get(FcRegister.C);
-            while (programStream.Position < programStream.Length - 1) {
+            if (programStream.Position < programStream.Length - 1) {
+                state = State.Running;
                 var opCodeByte = (byte) programStream.ReadByte();
                 if (!Enum.IsDefined(typeof(FcInternalOpCode), opCodeByte)) {
                     // unrecognized opcode
@@ -80,6 +90,8 @@ namespace FcChip {
 
                 ProcessInstruction(machineOpCode);
                 programStream.Position = registers.Get(FcRegister.C);
+            } else {
+                state = State.Stopped;
             }
         }
 

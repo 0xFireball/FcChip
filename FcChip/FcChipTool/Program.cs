@@ -22,9 +22,11 @@ namespace FcChipTool {
         private static int ProgramRun(RunOptions opts) {
             var inputStream = File.OpenRead(opts.inputFiles.Skip(1).First());
 
-            var vm = new FcVirtualMachine();
-            vm.LoadProgram(inputStream);
-            vm.Execute();
+            var chip = new FcVirtualChip();
+            chip.LoadProgram(inputStream);
+            while (chip.state != FcVirtualChip.State.Stopped) {
+                chip.Tick();
+            }
 
             return 0;
         }
