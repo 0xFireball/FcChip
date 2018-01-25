@@ -16,22 +16,40 @@ namespace FcChip {
         public class Registers {
             public ushort A;
             public ushort B;
+            public ushort M;
+            public ushort N;
 
             public ushort C;
 
             public bool E;
             public bool L;
 
-            public void Set(FcRegister registerId, ushort value) {
+            public void Set(FcRegister registerId, uint value) {
                 switch (registerId) {
                     case FcRegister.A:
-                        A = value;
+                        A = (ushort) value;
                         break;
                     case FcRegister.B:
-                        B = value;
+                        B = (ushort) value;
+                        break;
+                    case FcRegister.BL:
+                        B = (ushort) ((ushort) (B & 0xFF00) | (ushort) (value & 0x00FF));
+                        break;
+                    case FcRegister.BH:
+                        B = (ushort) ((ushort) (B & 0x00FF) | (ushort) (value & 0x00FF) << 8);
+                        break;
+                    case FcRegister.M:
+                        M = (ushort) value;
+                        break;
+                    case FcRegister.N:
+                        N = (ushort) value;
+                        break;
+                    case FcRegister.MN:
+                        M = (ushort) (value >> 16);
+                        N = (ushort) (value & 0x0000FFFF);
                         break;
                     case FcRegister.C:
-                        C = value;
+                        C = (ushort) value;
                         break;
                     case FcRegister.E:
                         E = value > 0;
@@ -42,12 +60,22 @@ namespace FcChip {
                 }
             }
 
-            public ushort Get(FcRegister registerId) {
+            public uint Get(FcRegister registerId) {
                 switch (registerId) {
                     case FcRegister.A:
                         return A;
                     case FcRegister.B:
                         return B;
+                    case FcRegister.BL:
+                        return (ushort) (B & 0x00FF);
+                    case FcRegister.BH:
+                        return (ushort) (B >> 8);
+                    case FcRegister.M:
+                        return M;
+                    case FcRegister.N:
+                        return N;
+                    case FcRegister.MN:
+                        return ((uint)M << 16) | N;
                     case FcRegister.C:
                         return C;
                     case FcRegister.E:
@@ -146,13 +174,13 @@ namespace FcChip {
                 }
                 case FcInternalOpCode.ShrR: {
                     var srcReg = (FcRegister) (byte) programStream.ReadByte();
-                    registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) >> registers.Get(srcReg)));
+                    registers.Set(FcRegister.A, registers.Get(FcRegister.A) >> (int) registers.Get(srcReg));
                     readOffset = 1;
                     break;
                 }
                 case FcInternalOpCode.ShlR: {
                     var srcReg = (FcRegister) (byte) programStream.ReadByte();
-                    registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) << registers.Get(srcReg)));
+                    registers.Set(FcRegister.A, registers.Get(FcRegister.A) << (int) registers.Get(srcReg));
                     readOffset = 1;
                     break;
                 }
