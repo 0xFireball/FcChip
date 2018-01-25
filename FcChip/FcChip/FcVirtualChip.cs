@@ -132,21 +132,9 @@ namespace FcChip {
                     readOffset = 2;
                     break;
                 }
-                case FcInternalOpCode.AddV: {
-                    var srcVal = (byte) programStream.ReadByte();
-                    registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) + srcVal));
-                    readOffset = 1;
-                    break;
-                }
                 case FcInternalOpCode.SubR: {
                     var srcReg = (FcRegister) (byte) programStream.ReadByte();
                     registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) - registers.Get(srcReg)));
-                    readOffset = 1;
-                    break;
-                }
-                case FcInternalOpCode.SubV: {
-                    var srcVal = (byte) programStream.ReadByte();
-                    registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) - srcVal));
                     readOffset = 1;
                     break;
                 }
@@ -156,33 +144,15 @@ namespace FcChip {
                     readOffset = 1;
                     break;
                 }
-                case FcInternalOpCode.MulV: {
-                    var srcVal = (byte) programStream.ReadByte();
-                    registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) * srcVal));
-                    readOffset = 1;
-                    break;
-                }
                 case FcInternalOpCode.ShrR: {
                     var srcReg = (FcRegister) (byte) programStream.ReadByte();
                     registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) >> registers.Get(srcReg)));
                     readOffset = 1;
                     break;
                 }
-                case FcInternalOpCode.ShrV: {
-                    var srcVal = (byte) programStream.ReadByte();
-                    registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) >> srcVal));
-                    readOffset = 1;
-                    break;
-                }
                 case FcInternalOpCode.ShlR: {
                     var srcReg = (FcRegister) (byte) programStream.ReadByte();
                     registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) << registers.Get(srcReg)));
-                    readOffset = 1;
-                    break;
-                }
-                case FcInternalOpCode.ShlV: {
-                    var srcVal = (byte) programStream.ReadByte();
-                    registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) << srcVal));
                     readOffset = 1;
                     break;
                 }
@@ -196,16 +166,6 @@ namespace FcChip {
                     readOffset = 2;
                     break;
                 }
-                case FcInternalOpCode.CmpV: {
-                    var testReg = (FcRegister) (byte) programStream.ReadByte();
-                    var val = (byte) programStream.ReadByte();
-                    var test = registers.Get(testReg);
-                    registers.Set(FcRegister.E, (ushort) (test == val ? 1 : 0));
-                    registers.Set(FcRegister.L, (ushort) (test < val ? 1 : 0));
-                    readOffset = 2;
-                    break;
-                }
-
                 case FcInternalOpCode.Jmp: {
                     var addressBytes = new byte[2];
                     programStream.Read(addressBytes, 0, addressBytes.Length);

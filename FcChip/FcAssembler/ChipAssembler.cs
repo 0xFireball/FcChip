@@ -20,21 +20,28 @@ namespace FcAssembler {
             // emit code
             var outputProgram = new MemoryStream();
 
+
             using (var bw = new BinaryWriter(outputProgram)) {
                 offset = 0;
                 foreach (var node in programNodes) {
-                    switch (node) {
-                        case LabelNode label:
-                            labelSymbols[label.name] = offset;
-                            break;
-                        case Instruction instr:
-                            var emit = EmitInstruction(instr);
-                            bw.Write(emit);
-                            offset += (ushort) emit.Length;
-                            break;
+                    try {
+                        switch (node) {
+                            case LabelNode label:
+                                labelSymbols[label.name] = offset;
+                                break;
+                            case Instruction instr:
+                                var emit = EmitInstruction(instr);
+                                bw.Write(emit);
+                                offset += (ushort) emit.Length;
+                                break;
+                        }
+                    } catch (AssemblerException e) {
+                        Console.WriteLine(e);
+                        throw new AssemblerException($"error at line `{node}` : {e.Message}");
                     }
                 }
             }
+
 
             var programBytes = outputProgram.ToArray();
 
@@ -110,14 +117,8 @@ namespace FcAssembler {
                             result.Add((byte) registerOperand.register);
                             break;
                         }
-                        case ValueOperand valueOperand: {
-                            Enum.TryParse(typeof(FcInternalOpCode), opCodeStr + "V", out var code);
-                            result.Add((byte) code);
-                            result.Add((byte) valueOperand.value);
-                            break;
-                        }
                         default:
-                            throw new AssemblerException("expected R/V operand");
+                            throw new AssemblerException("expected R operand");
                     }
 
                     break;
@@ -136,13 +137,8 @@ namespace FcAssembler {
                             result.Add((byte) testReg);
                             result.Add((byte) registerOperand.register);
                             break;
-                        case ValueOperand valueOperand:
-                            result.Add((byte) FcInternalOpCode.CmpV);
-                            result.Add((byte) testReg);
-                            result.Add((byte) valueOperand.value);
-                            break;
                         default:
-                            throw new AssemblerException("expected R/V operand");
+                            throw new AssemblerException("expected R operand");
                     }
 
                     break;

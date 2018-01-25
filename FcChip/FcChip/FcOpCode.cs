@@ -34,20 +34,14 @@
         
         // Arithmetic instructions
         AddR = 0x21,
-        AddV = 0x22,
         SubR = 0x23,
-        SubV = 0x24,
         MulR = 0x25,
-        MulV = 0x26,
         
         ShlR = 0x27,
-        ShlV = 0x28,
         ShrR = 0x29,
-        ShrV = 0x2A,
         
         // Logical instructions
         CmpR = 0x31,
-        CmpV = 0x32,
         
         // Flow instructions
         Jmp = 0x40,
