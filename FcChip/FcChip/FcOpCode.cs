@@ -3,6 +3,7 @@
         // General purpose instructions
         Nop, // nop
         Mov, // mov R/V R
+        Swp, // swp R R
         
         Slp,
         
@@ -27,8 +28,9 @@
         Nop = 0x01, // nop
         MovR = 0x02,
         MovV = 0x03,
+        Swp = 0x05,
         
-        Slp = 0x04,
+        Slp = 0x0A,
         
         // Arithmetic instructions
         AddR = 0x21,

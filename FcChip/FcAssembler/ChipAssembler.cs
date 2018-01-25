@@ -81,6 +81,22 @@ namespace FcAssembler {
 
                     break;
                 }
+                case FcOpCode.Swp: {
+                    result.Add((byte) FcInternalOpCode.Swp);
+                    if (!(instruction.operands[0] is RegisterOperand)) {
+                        throw new AssemblerException("expected R operand");
+                    }
+
+                    result.Add((byte) ((RegisterOperand) instruction.operands[0]).register);
+
+                    if (!(instruction.operands[1] is RegisterOperand)) {
+                        throw new AssemblerException("expected R operand");
+                    }
+
+                    result.Add((byte) ((RegisterOperand) instruction.operands[1]).register);
+
+                    break;
+                }
                 case FcOpCode.Add:
                 case FcOpCode.Sub:
                 case FcOpCode.Mul:
