@@ -45,7 +45,7 @@ namespace FcChip {
                     case FcRegister.E:
                         return (ushort) (E ? 1 : 0);
                     case FcRegister.L:
-                        return (ushort) (E ? 1 : 0);
+                        return (ushort) (L ? 1 : 0);
                     default:
                         return 0;
                 }
