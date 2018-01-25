@@ -129,7 +129,7 @@ namespace FcChip {
                 case FcInternalOpCode.AddR: {
                     var srcReg = (FcRegister) (byte) programStream.ReadByte();
                     registers.Set(FcRegister.A, (ushort) (registers.Get(FcRegister.A) + registers.Get(srcReg)));
-                    readOffset = 2;
+                    readOffset = 1;
                     break;
                 }
                 case FcInternalOpCode.SubR: {
