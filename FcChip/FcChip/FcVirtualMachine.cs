@@ -107,8 +107,10 @@ namespace FcChip {
                 case FcInternalOpCode.Swp: {
                     var reg1 = (FcRegister) (byte) programStream.ReadByte();
                     var reg2 = (FcRegister) (byte) programStream.ReadByte();
-                    registers.Set(reg1, registers.Get(reg2));
-                    registers.Set(reg2, registers.Get(reg1));
+                    var val1 = registers.Get(reg1);
+                    var val2 = registers.Get(reg2);
+                    registers.Set(reg1, val2);
+                    registers.Set(reg2, val1);
                     readOffset = 2;
                     break;
                 }
