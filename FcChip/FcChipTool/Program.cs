@@ -12,7 +12,7 @@ namespace FcChipTool {
             public IEnumerable<string> inputFiles { get; set; }
         }
 
-        static void main(string[] args) {
+        static void Main(string[] args) {
             Parser.Default.ParseArguments<RunOptions>(args)
                 .MapResult(
                     opts => programRun(opts),

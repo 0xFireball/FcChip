@@ -13,7 +13,7 @@ namespace FcAssembler {
             public string outputFile { get; set; }
         }
 
-        static void main(string[] args) {
+        static void Main(string[] args) {
             Console.WriteLine("FCAssembler");
 
             CommandLine.Parser.Default.ParseArguments<Options>(args)
