@@ -6,33 +6,33 @@ using FcChip;
 
 namespace FcAssembler {
     public class ChipAssembler {
-        private Dictionary<string, ushort> labelSymbols = new Dictionary<string, ushort>(); // name, offset
+        private Dictionary<string, ushort> _labelSymbols = new Dictionary<string, ushort>(); // name, offset
 
         private List<KeyValuePair<string, ushort>>
-            fwLabels = new List<KeyValuePair<string, ushort>>(); // referenced name, position
+            _fwLabels = new List<KeyValuePair<string, ushort>>(); // referenced name, position
 
-        private ushort offset = 0;
+        private ushort _offset = 0;
 
-        public byte[] AssembleProgram(List<string> sourceLines) {
+        public byte[] assembleProgram(List<string> sourceLines) {
             var tokenizer = new Tokenizer();
-            var programNodes = tokenizer.Tokenize(sourceLines);
+            var programNodes = tokenizer.tokenize(sourceLines);
 
             // emit code
             var outputProgram = new MemoryStream();
 
 
             using (var bw = new BinaryWriter(outputProgram)) {
-                offset = 0;
+                _offset = 0;
                 foreach (var node in programNodes) {
                     try {
                         switch (node) {
                             case LabelNode label:
-                                labelSymbols[label.name] = offset;
+                                _labelSymbols[label.name] = _offset;
                                 break;
                             case Instruction instr:
-                                var emit = EmitInstruction(instr);
+                                var emit = emitInstruction(instr);
                                 bw.Write(emit);
-                                offset += (ushort) emit.Length;
+                                _offset += (ushort) emit.Length;
                                 break;
                         }
                     } catch (AssemblerException e) {
@@ -46,8 +46,8 @@ namespace FcAssembler {
             var programBytes = outputProgram.ToArray();
 
             // replace forward symbols
-            foreach (var fwLabel in fwLabels) {
-                var labelAddress = BitConverter.GetBytes(labelSymbols[fwLabel.Key]);
+            foreach (var fwLabel in _fwLabels) {
+                var labelAddress = BitConverter.GetBytes(_labelSymbols[fwLabel.Key]);
                 programBytes[fwLabel.Value] = labelAddress[0];
                 programBytes[fwLabel.Value + 1] = labelAddress[1];
             }
@@ -55,7 +55,7 @@ namespace FcAssembler {
             return programBytes;
         }
 
-        public byte[] EmitInstruction(Instruction instruction) {
+        public byte[] emitInstruction(Instruction instruction) {
             var result = new List<byte>();
             switch (instruction.opCode) {
                 case FcOpCode.Nop: {
@@ -153,8 +153,8 @@ namespace FcAssembler {
 
                     switch (instruction.operands[0]) {
                         case LabelOperand labelOperand:
-                            fwLabels.Add(new KeyValuePair<string, ushort>(labelOperand.label,
-                                (ushort) (offset + result.Count)));
+                            _fwLabels.Add(new KeyValuePair<string, ushort>(labelOperand.label,
+                                (ushort) (_offset + result.Count)));
                             result.Add(0);
                             result.Add(0);
                             break;

@@ -13,17 +13,17 @@ namespace FcAssembler {
             public string outputFile { get; set; }
         }
 
-        static void Main(string[] args) {
+        static void main(string[] args) {
             Console.WriteLine("FCAssembler");
 
             CommandLine.Parser.Default.ParseArguments<Options>(args)
-                .WithParsed(opts => RunProgram(opts))
+                .WithParsed(opts => runProgram(opts))
                 .WithNotParsed(errs => {
                     Console.WriteLine("Usage: FCAssembler [OPTIONS] <input files>");
                 });
         }
 
-        static void RunProgram(Options options) {
+        static void runProgram(Options options) {
             foreach (var inputFile in options.inputFiles) {
                 // read input file
                 var sourceLines = new List<string>();
@@ -35,7 +35,7 @@ namespace FcAssembler {
                 }
 
                 var assembler = new ChipAssembler();
-                var program = assembler.AssembleProgram(sourceLines);
+                var program = assembler.assembleProgram(sourceLines);
                 var outputFile = options.outputFile ?? $"{Path.GetFileNameWithoutExtension(inputFile)}.ch";
 
                 using (var bw = new BinaryWriter(File.Create(outputFile))) {

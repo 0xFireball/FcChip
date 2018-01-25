@@ -6,7 +6,7 @@ using FcChip;
 
 namespace FcAssembler {
     public class Tokenizer {
-        public List<ProgramNode> Tokenize(List<string> programSource) {
+        public List<ProgramNode> tokenize(List<string> programSource) {
             var program = new List<ProgramNode>();
             for (var i = 0; i < programSource.Count; i++) {
                 var line = programSource[i];
@@ -19,7 +19,7 @@ namespace FcAssembler {
 
                 var segments = codePortion.Split(' ');
                 try {
-                    var node = ParseLine(segments);
+                    var node = parseLine(segments);
                     program.Add(node);
                 } catch (TokenizationException tex) {
                     throw new TokenizationException(tex, i + 1);
@@ -29,7 +29,7 @@ namespace FcAssembler {
             return program;
         }
 
-        private ProgramNode ParseLine(string[] segments) {
+        private ProgramNode parseLine(string[] segments) {
             var literal = segments[0];
 
             if (literal.EndsWith(":")) {
@@ -37,7 +37,7 @@ namespace FcAssembler {
                 return new LabelNode(literal.Substring(0, literal.Length - 1));
             }
 
-            var operands = ParseOperands(segments);
+            var operands = parseOperands(segments);
             if (Enum.TryParse(typeof(FcOpCode), literal, true, out var opCode)) {
                 return new Instruction((FcOpCode) opCode, operands);
             } else {
@@ -45,7 +45,7 @@ namespace FcAssembler {
             }
         }
 
-        private List<Operand> ParseOperands(string[] segments) {
+        private List<Operand> parseOperands(string[] segments) {
             var operands = new List<Operand>();
             for (var i = 1; i < segments.Length; i++) {
                 var literal = segments[i];

@@ -12,20 +12,20 @@ namespace FcChipTool {
             public IEnumerable<string> inputFiles { get; set; }
         }
 
-        static void Main(string[] args) {
+        static void main(string[] args) {
             Parser.Default.ParseArguments<RunOptions>(args)
                 .MapResult(
-                    opts => ProgramRun(opts),
+                    opts => programRun(opts),
                     errs => 1);
         }
 
-        private static int ProgramRun(RunOptions opts) {
+        private static int programRun(RunOptions opts) {
             var inputStream = File.OpenRead(opts.inputFiles.Skip(1).First());
 
             var chip = new FcVirtualChip();
-            chip.LoadProgram(inputStream);
+            chip.loadProgram(inputStream);
             while (chip.state != FcVirtualChip.State.Stopped) {
-                chip.Tick();
+                chip.tick();
             }
 
             return 0;
