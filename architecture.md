@@ -3,6 +3,7 @@
 
 ## Architecture summary
 
+Endianness: Little Endian
 Word size: 16 bits
 
 ## Register Set
@@ -44,3 +45,6 @@ Word size: 16 bits
 
 When memory is accessed using the memory access instructions, the MN pseudo-register is used to address the location in memory.
 
+## Simulated Components
+
+- approximately 65k bytes of memory

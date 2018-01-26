@@ -6,6 +6,7 @@
         Swp,
         
         Slp,
+        Halt,
         
         // Arithmetic instructions
         Add,
@@ -35,6 +36,7 @@
         Swp = 0x05,
         
         Slp = 0x0A,
+        Halt = 0x0B,
         
         // Arithmetic instructions
         AddR = 0x21,
