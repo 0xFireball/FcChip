@@ -11,6 +11,16 @@
         
         MN = 0x3A, // 32b "MN" {MN} register, used for memory addressing
         
+        // data registers
+        R0 = 0x40,
+        R1 = 0x41,
+        R2 = 0x42,
+        R3 = 0x43,
+        R4 = 0x44,
+        R5 = 0x45,
+        R6 = 0x46,
+        R7 = 0x47,
+        
         // special
         C = 0xB0, // Program counter register
         

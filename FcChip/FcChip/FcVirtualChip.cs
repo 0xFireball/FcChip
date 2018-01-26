@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace FcChip {
@@ -22,6 +23,8 @@ namespace FcChip {
             public ushort C;
 
             public ushort F;
+
+            public Dictionary<byte, ushort> dataRegisters = new Dictionary<byte, ushort>();
 
             public void Set(FcRegister registerId, uint value) {
                 switch (registerId) {
@@ -53,6 +56,9 @@ namespace FcChip {
                     case FcRegister.F:
                         F = (ushort) value;
                         break;
+                    default:
+                        dataRegisters[(byte) registerId] = (ushort) value;
+                        break;
                 }
             }
 
@@ -77,7 +83,9 @@ namespace FcChip {
                     case FcRegister.F:
                         return F;
                     default:
-                        return 0;
+                        return dataRegisters.ContainsKey((byte) registerId)
+                            ? dataRegisters[(byte) registerId]
+                            : 0u;
                 }
             }
         }
