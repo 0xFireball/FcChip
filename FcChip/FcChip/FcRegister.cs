@@ -1,22 +1,25 @@
 ﻿namespace FcChip {
     public enum FcRegister : byte {
-        
         // general purpose
-        A = 0xA0, // 16b "A" accumulator register
-        B = 0xA1, // 16b "B" register
-        M = 0xA2, // 16b "M" register
-        N = 0xA3, // 16b "N" register
+        A = 0x20, // 16b "A" accumulator register
+        B = 0x21, // 16b "B" register
+        M = 0x22, // 16b "M" register
+        N = 0x23, // 16b "N" register
         
-        BL = 0xA4, // 8b lower 8 bits of B
-        BH = 0xA5, // 8b upper 8 bits of B
+        BL = 0x14, // 8b lower 8 bits of B
+        BH = 0x15, // 8b upper 8 bits of B
         
-        MN = 0xAA, // 32b "MN" {MN} register, used for memory addressing
+        MN = 0x3A, // 32b "MN" {MN} register, used for memory addressing
         
         // special
         C = 0xB0, // Program counter register
         
         // flags
-        E = 0xC0,
-        L = 0xC1,
+        F = 0xC0, // 16b FLAGS register
+    }
+
+    public enum FcFlags {
+        Equal = 0,
+        Less = 1,
     }
 }

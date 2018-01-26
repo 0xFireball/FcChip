@@ -21,8 +21,7 @@ namespace FcChip {
 
             public ushort C;
 
-            public bool E;
-            public bool L;
+            public ushort F;
 
             public void Set(FcRegister registerId, uint value) {
                 switch (registerId) {
@@ -51,11 +50,8 @@ namespace FcChip {
                     case FcRegister.C:
                         C = (ushort) value;
                         break;
-                    case FcRegister.E:
-                        E = value > 0;
-                        break;
-                    case FcRegister.L:
-                        L = value > 0;
+                    case FcRegister.F:
+                        F = (ushort) value;
                         break;
                 }
             }
@@ -78,10 +74,8 @@ namespace FcChip {
                         return ((uint) M << 16) | N;
                     case FcRegister.C:
                         return C;
-                    case FcRegister.E:
-                        return (ushort) (E ? 1 : 0);
-                    case FcRegister.L:
-                        return (ushort) (L ? 1 : 0);
+                    case FcRegister.F:
+                        return F;
                     default:
                         return 0;
                 }
@@ -108,6 +102,11 @@ namespace FcChip {
 
         private byte readProgramByte(int offset = 0) {
             return memory[registers.Get(FcRegister.C) + offset];
+        }
+
+        private uint setFlags(uint flags, int position, bool value) {
+            var mask = (uint) 0b1 << position;
+            return value ? (flags | mask) : (flags & ~mask);
         }
 
         public void tick() {
@@ -197,8 +196,10 @@ namespace FcChip {
                     var valReg = (FcRegister) readProgramByte(1);
                     var test = registers.Get(testReg);
                     var val = registers.Get(valReg);
-                    registers.Set(FcRegister.E, (ushort) (test == val ? 1 : 0));
-                    registers.Set(FcRegister.L, (ushort) (test < val ? 1 : 0));
+                    var flags = (ushort) registers.Get(FcRegister.F);
+                    flags = (ushort) setFlags(flags, 0, test == val);
+                    flags = (ushort) setFlags(flags, 1, test < val);
+                    registers.Set(FcRegister.F, flags);
                     readOffset = 2;
                     break;
                 }
@@ -215,7 +216,7 @@ namespace FcChip {
                     addressBytes[0] = memory[registers.Get(FcRegister.C)];
                     addressBytes[1] = memory[registers.Get(FcRegister.C) + 1];
                     var jmpAddress = BitConverter.ToUInt16(addressBytes, 0);
-                    if (registers.Get(FcRegister.E) > 0) {
+                    if ((registers.Get(FcRegister.F) & 0b1 << (int) FcFlags.Equal) > 0) {
                         registers.Set(FcRegister.C, jmpAddress);
                     } else {
                         readOffset = 2;
@@ -228,7 +229,7 @@ namespace FcChip {
                     addressBytes[0] = memory[registers.Get(FcRegister.C)];
                     addressBytes[1] = memory[registers.Get(FcRegister.C) + 1];
                     var jmpAddress = BitConverter.ToUInt16(addressBytes, 0);
-                    if (registers.Get(FcRegister.E) == 0) {
+                    if ((registers.Get(FcRegister.F) & 0b1 << (int) FcFlags.Equal) == 0) {
                         registers.Set(FcRegister.C, jmpAddress);
                     } else {
                         readOffset = 2;
