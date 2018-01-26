@@ -106,8 +106,8 @@ namespace FcChip {
             registers.Set(FcRegister.C, PROGRAM_OFFSET);
         }
 
-        private byte readProgramByte() {
-            return memory[registers.Get(FcRegister.C)];
+        private byte readProgramByte(int offset = 0) {
+            return memory[registers.Get(FcRegister.C) + offset];
         }
 
         public void tick() {
@@ -140,21 +140,21 @@ namespace FcChip {
                     break;
                 case FcInternalOpCode.MovR: {
                     var srcReg = (FcRegister) readProgramByte();
-                    var destReg = (FcRegister) readProgramByte();
+                    var destReg = (FcRegister) readProgramByte(1);
                     registers.Set(destReg, registers.Get(srcReg));
                     readOffset = 2;
                     break;
                 }
                 case FcInternalOpCode.MovV: {
                     var srcVal = readProgramByte();
-                    var destReg = (FcRegister) readProgramByte();
+                    var destReg = (FcRegister) readProgramByte(1);
                     registers.Set(destReg, srcVal);
                     readOffset = 2;
                     break;
                 }
                 case FcInternalOpCode.Swp: {
                     var reg1 = (FcRegister) readProgramByte();
-                    var reg2 = (FcRegister) readProgramByte();
+                    var reg2 = (FcRegister) readProgramByte(1);
                     var val1 = registers.Get(reg1);
                     var val2 = registers.Get(reg2);
                     registers.Set(reg1, val2);
@@ -194,7 +194,7 @@ namespace FcChip {
                 }
                 case FcInternalOpCode.CmpR: {
                     var testReg = (FcRegister) readProgramByte();
-                    var valReg = (FcRegister) readProgramByte();
+                    var valReg = (FcRegister) readProgramByte(1);
                     var test = registers.Get(testReg);
                     var val = registers.Get(valReg);
                     registers.Set(FcRegister.E, (ushort) (test == val ? 1 : 0));
@@ -251,8 +251,6 @@ namespace FcChip {
                     var address = registers.Get(FcRegister.MN);
                     memory[address] = (byte) (val & 0x00FF);
                     memory[address + 1] = (byte) (val >> 8);
-                    var w0 = memory[address];
-                    var w1 = memory[address + 1];
                     readOffset = 1;
                     break;
                 }
