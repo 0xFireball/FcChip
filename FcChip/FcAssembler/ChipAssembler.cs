@@ -66,6 +66,10 @@ namespace FcAssembler {
                     result.Add((byte) FcInternalOpCode.Slp);
                     break;
                 }
+                case FcOpCode.Hlt: {
+                    result.Add((byte) FcInternalOpCode.Hlt);
+                    break;
+                }
                 case FcOpCode.Mov: {
                     switch (instruction.operands[0]) {
                         case RegisterOperand registerOperand:
