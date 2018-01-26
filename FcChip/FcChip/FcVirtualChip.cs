@@ -75,7 +75,7 @@ namespace FcChip {
                     case FcRegister.N:
                         return N;
                     case FcRegister.MN:
-                        return ((uint)M << 16) | N;
+                        return ((uint) M << 16) | N;
                     case FcRegister.C:
                         return C;
                     case FcRegister.E:

@@ -169,6 +169,22 @@ namespace FcAssembler {
 
                     break;
                 }
+                case FcOpCode.Ldr:
+                case FcOpCode.Str: {
+                    var opCodeStr = instruction.opCode.ToString();
+                    Enum.TryParse(typeof(FcInternalOpCode), opCodeStr, out var code);
+                    result.Add((byte) code);
+                    switch (instruction.operands[0]) {
+                        case RegisterOperand registerOperand: {
+                            result.Add((byte) registerOperand.register);
+                            break;
+                        }
+                        default:
+                            throw new AssemblerException("expected R operand");
+                    }
+
+                    break;
+                }
             }
 
             return result.ToArray();

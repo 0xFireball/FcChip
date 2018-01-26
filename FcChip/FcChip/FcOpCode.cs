@@ -1,27 +1,31 @@
 ﻿namespace FcChip {
     public enum FcOpCode : byte {
         // General purpose instructions
-        Nop, // nop
-        Mov, // mov R/V R
-        Swp, // swp R R
+        Nop,
+        Mov,
+        Swp,
         
         Slp,
         
         // Arithmetic instructions
-        Add, // add R/V
-        Sub, // sub R/V
-        Mul, // mul R/V
+        Add,
+        Sub,
+        Mul,
         
-        Shl, // shl R/V
-        Shr, // shr R/V
+        Shl,
+        Shr,
         
         // Logical instructions
-        Cmp, // cmp R R/V, sets E flag if equal
+        Cmp,
         
         // Flow instructions
-        Jmp, // jmp L/A
-        Jeq, // jeq L/A
-        Jne, // jne L/A
+        Jmp,
+        Jeq,
+        Jne,
+        
+        // Memory access
+        Ldr, // ldr R
+        Str, // str R 
     }
 
     public enum FcInternalOpCode : byte {
@@ -47,5 +51,9 @@
         Jmp = 0x40,
         Jeq = 0x41,
         Jne = 0x42,
+        
+        // Memory access
+        Ldr = 0x50,
+        Str = 0x51,
     }
 }
