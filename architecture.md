@@ -58,6 +58,6 @@
 
 - When memory is accessed using the memory access instructions, the MN pseudo-register is used to address the location in memory.
 
-## Simulated Components
+## Suggested calling convention
 
-- approximately 65k bytes of memory
+Use `r0` to `r7` for the first 8 parameters, then use the stack for additional parameters.
