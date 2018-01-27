@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/FcChipTool/bin/Debug/netcoreapp2.0/FcChipTool.dll",
             "args": [
-                "run", "-m", "2048", "-d", "program.ch"
+                "run", "-m", "2048", "-d", "program.fc"
             ],
             "cwd": "${workspaceFolder}/FcChipTool/bin/Debug",
             "console": "internalConsole",
