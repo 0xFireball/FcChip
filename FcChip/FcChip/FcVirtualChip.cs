@@ -288,6 +288,32 @@ namespace FcChip {
                     readOffset = 1;
                     break;
                 }
+                case FcInternalOpCode.Call: {
+                    var pc = (ushort) registers.Get(FcRegister.C);
+                    var sp = (ushort) registers.Get(FcRegister.S);
+                    var dt = BitConverter.GetBytes(pc);
+                    memory[memory.Length - sp - 1] = dt[1];
+                    memory[memory.Length - sp - 2] = dt[0];
+                    registers.Set(FcRegister.S, (ushort) (sp + 2));
+                    var addressBytes = new byte[2];
+                    addressBytes[0] = readProgramByte();
+                    addressBytes[1] = readProgramByte(1);
+                    var callAddress = BitConverter.ToUInt16(addressBytes, 0);
+                    registers.Set(FcRegister.C, callAddress);
+                    readOffset = 0;
+                    break;
+                }
+                case FcInternalOpCode.Ret: {
+                    var sp = (ushort) registers.Get(FcRegister.S);
+                    var dt = new byte[2];
+                    dt[1] = memory[memory.Length - sp + 1];
+                    dt[0] = memory[memory.Length - sp];
+                    registers.Set(FcRegister.S, (ushort) (sp - 2));
+                    var retAddr = BitConverter.ToUInt16(dt, 0);
+                    registers.Set(FcRegister.C, retAddr);
+                    readOffset = 2; // resume at instruction after caller, and call instructions have [2 bytes] of arguments
+                    break;
+                }
             }
 
             registers.Set(FcRegister.C, (ushort) (registers.Get(FcRegister.C) + readOffset));

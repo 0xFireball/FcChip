@@ -58,16 +58,13 @@ namespace FcAssembler {
         public byte[] emitInstruction(Instruction instruction) {
             var result = new List<byte>();
             switch (instruction.opCode) {
-                case FcOpCode.Nop: {
-                    result.Add((byte) FcInternalOpCode.Nop);
-                    break;
-                }
-                case FcOpCode.Slp: {
-                    result.Add((byte) FcInternalOpCode.Slp);
-                    break;
-                }
-                case FcOpCode.Hlt: {
-                    result.Add((byte) FcInternalOpCode.Hlt);
+                case FcOpCode.Nop:
+                case FcOpCode.Slp:
+                case FcOpCode.Hlt:
+                case FcOpCode.Ret: {
+                    var opCodeStr = instruction.opCode.ToString();
+                    Enum.TryParse(typeof(FcInternalOpCode), opCodeStr, out var code);
+                    result.Add((byte) code);
                     break;
                 }
                 case FcOpCode.Mov: {
@@ -150,7 +147,8 @@ namespace FcAssembler {
 
                 case FcOpCode.Jmp:
                 case FcOpCode.Jeq:
-                case FcOpCode.Jne: {
+                case FcOpCode.Jne:
+                case FcOpCode.Call: {
                     var opCodeStr = instruction.opCode.ToString();
                     Enum.TryParse(typeof(FcInternalOpCode), opCodeStr, out var code);
                     result.Add((byte) code);
