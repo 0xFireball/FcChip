@@ -1,10 +1,11 @@
 
 # FcChip [FCH] Architecture
 
-## Architecture summary
+## Architecture quick facts
 
 Endianness: Little Endian
 Word size: 16 bits
+Memory addressable with 32-bit addresses
 
 ## Register Set
 
