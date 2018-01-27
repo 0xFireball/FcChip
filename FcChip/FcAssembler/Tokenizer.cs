@@ -74,10 +74,13 @@ namespace FcAssembler {
                 }
 
                 if (literal.StartsWith("$")) {
-                    if (ushort.TryParse(literal.Substring(1), NumberStyles.HexNumber, null, out var fromHexValue)) {
-                        operands.Add(new ValueOperand(fromHexValue));
-                        continue;
-                    }
+                    operands.Add(new ValueOperand(Convert.ToUInt16(literal.Substring(1), 16)));
+                    continue;
+                }
+                
+                if (literal.StartsWith("%")) {
+                    operands.Add(new ValueOperand(Convert.ToUInt16(literal.Substring(1), 2)));
+                    continue;
                 }
             }
 
