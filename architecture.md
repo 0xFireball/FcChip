@@ -32,11 +32,11 @@
 - `hlt` - halt program execution
 
 ### Arithmetic
-- `add R/V` - add data to accumulator
-- `sub R/V` - sub data to accumulator
-- `mul R/V` - mul data to accumulator
-- `shl R/V` - shift left data to accumulator
-- `shr R/V` - shift right data to accumulator
+- `add R` - add data to accumulator
+- `sub R` - sub data to accumulator
+- `mul R` - mul data to accumulator
+- `shl R` - shift left data to accumulator
+- `shr R` - shift right data to accumulator
 
 ### Control Flow
 - `cmp R R/V` - compare data, setting F flags if equal, less, etc.
