@@ -16,7 +16,9 @@ Word size: 16 bits
 - `BH` - 8-bit register that is the higher 8 bits of B
 - `MN` - 32-bit pseudo-register that contains {MN}
 - `C` - 16-bit program counter register
+- `C` - 16-bit stack pointer register
 - `R0`, `R1`, `R2`, `R3`, `R4`, `R5`, `R6`, `R7` - 16-bit data registers
+- `F` - 16-bit flags register [Carry,Less,...(reserved)]
 
 
 ## Instruction Set
