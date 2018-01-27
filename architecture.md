@@ -37,7 +37,7 @@
 - `mul R/V` - mul data to accumulator
 - `shl R/V` - shift left data to accumulator
 - `shr R/V` - shift right data to accumulator
-- `cmp R R/V` - compare data, setting E flag if equal, and L flag if first value is less
+- `cmp R R/V` - compare data, setting F flags if equal, less, etc.
 - `jmp L/A` - jump to an address
 - `jeq L/A` - jump to an address if E flag is set
 - `jne L/A` - jump to an address if E flag is unset
