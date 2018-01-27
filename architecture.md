@@ -29,6 +29,7 @@
 - `mov R/V R` - copy data to a register
 - `swp R R` - swap data in two registers
 - `slp` - sleep (reserved)
+- `hlt` - halt program execution
 
 ### Arithmetic
 - `add R/V` - add data to accumulator
