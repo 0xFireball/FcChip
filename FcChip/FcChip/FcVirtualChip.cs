@@ -5,7 +5,6 @@ using System.IO;
 namespace FcChip {
     public class FcVirtualChip {
         public enum State {
-            Ready,
             Running,
             Stopped
         }
@@ -21,6 +20,7 @@ namespace FcChip {
             public ushort N;
 
             public ushort C;
+            public ushort S;
 
             public ushort F;
 
@@ -53,6 +53,9 @@ namespace FcChip {
                     case FcRegister.C:
                         C = (ushort) value;
                         break;
+                    case FcRegister.S:
+                        S = (ushort) value;
+                        break;
                     case FcRegister.F:
                         F = (ushort) value;
                         break;
@@ -80,6 +83,8 @@ namespace FcChip {
                         return ((uint) M << 16) | N;
                     case FcRegister.C:
                         return C;
+                    case FcRegister.S:
+                        return S;
                     case FcRegister.F:
                         return F;
                     default:
@@ -100,7 +105,7 @@ namespace FcChip {
         public void initialize() {
             registers = new Registers();
             memory = new byte[ushort.MaxValue];
-            state = State.Ready;
+            state = State.Running;
         }
 
         public void loadProgram(Stream programStream) {
@@ -118,8 +123,7 @@ namespace FcChip {
         }
 
         public void tick() {
-            if (state != State.Stopped) {
-                state = State.Running;
+            if (state == State.Running) {
                 var opCodeByte = readProgramByte();
                 if (!Enum.IsDefined(typeof(FcInternalOpCode), opCodeByte)) {
                     // unrecognized opcode
@@ -130,8 +134,6 @@ namespace FcChip {
                 var machineOpCode = (FcInternalOpCode) opCodeByte;
                 registers.Set(FcRegister.C, registers.Get(FcRegister.C) + 1);
                 processInstruction(machineOpCode);
-            } else {
-                state = State.Stopped;
             }
         }
 
@@ -213,16 +215,16 @@ namespace FcChip {
                 }
                 case FcInternalOpCode.Jmp: {
                     var addressBytes = new byte[2];
-                    addressBytes[0] = memory[registers.Get(FcRegister.C)];
-                    addressBytes[1] = memory[registers.Get(FcRegister.C) + 1];
+                    addressBytes[0] = readProgramByte();
+                    addressBytes[1] = readProgramByte(1);
                     var jmpAddress = BitConverter.ToUInt16(addressBytes, 0);
                     registers.Set(FcRegister.C, jmpAddress);
                     break;
                 }
                 case FcInternalOpCode.Jeq: {
                     var addressBytes = new byte[2];
-                    addressBytes[0] = memory[registers.Get(FcRegister.C)];
-                    addressBytes[1] = memory[registers.Get(FcRegister.C) + 1];
+                    addressBytes[0] = readProgramByte();
+                    addressBytes[1] = readProgramByte(1);
                     var jmpAddress = BitConverter.ToUInt16(addressBytes, 0);
                     if ((registers.Get(FcRegister.F) & 0b1 << (int) FcFlags.Equal) > 0) {
                         registers.Set(FcRegister.C, jmpAddress);
@@ -234,8 +236,8 @@ namespace FcChip {
                 }
                 case FcInternalOpCode.Jne: {
                     var addressBytes = new byte[2];
-                    addressBytes[0] = memory[registers.Get(FcRegister.C)];
-                    addressBytes[1] = memory[registers.Get(FcRegister.C) + 1];
+                    addressBytes[0] = readProgramByte();
+                    addressBytes[1] = readProgramByte(1);
                     var jmpAddress = BitConverter.ToUInt16(addressBytes, 0);
                     if ((registers.Get(FcRegister.F) & 0b1 << (int) FcFlags.Equal) == 0) {
                         registers.Set(FcRegister.C, jmpAddress);
@@ -260,6 +262,29 @@ namespace FcChip {
                     var address = registers.Get(FcRegister.MN);
                     memory[address] = (byte) (val & 0x00FF);
                     memory[address + 1] = (byte) (val >> 8);
+                    readOffset = 1;
+                    break;
+                }
+                case FcInternalOpCode.Push: {
+                    var srcReg = (FcRegister) readProgramByte();
+                    var val = (ushort) registers.Get(srcReg);
+                    var sp = (ushort) registers.Get(FcRegister.S);
+                    var dt = BitConverter.GetBytes(val);
+                    memory[memory.Length - sp - 1] = dt[1];
+                    memory[memory.Length - sp - 2] = dt[0];
+                    registers.Set(FcRegister.S, (ushort) (sp + 2));
+                    readOffset = 1;
+                    break;
+                }
+                case FcInternalOpCode.Pop: {
+                    var destReg = (FcRegister) readProgramByte();
+                    var sp = (ushort) registers.Get(FcRegister.S);
+                    var dt = new byte[2];
+                    dt[1] = memory[memory.Length - sp + 1];
+                    dt[0] = memory[memory.Length - sp];
+                    registers.Set(FcRegister.S, (ushort) (sp - 2));
+                    var val = BitConverter.ToUInt16(dt, 0);
+                    registers.Set(destReg, val);
                     readOffset = 1;
                     break;
                 }

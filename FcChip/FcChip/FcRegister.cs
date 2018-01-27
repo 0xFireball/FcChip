@@ -23,6 +23,7 @@
         
         // special
         C = 0xB0, // Program counter register
+        S = 0xB1, // Stack pointer
         
         // flags
         F = 0xC0, // 16b FLAGS register

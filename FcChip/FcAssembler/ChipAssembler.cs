@@ -174,7 +174,9 @@ namespace FcAssembler {
                     break;
                 }
                 case FcOpCode.Ldr:
-                case FcOpCode.Str: {
+                case FcOpCode.Str:
+                case FcOpCode.Push:
+                case FcOpCode.Pop: {
                     var opCodeStr = instruction.opCode.ToString();
                     Enum.TryParse(typeof(FcInternalOpCode), opCodeStr, out var code);
                     result.Add((byte) code);
