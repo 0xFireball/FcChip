@@ -95,16 +95,14 @@ namespace FcChip {
             }
         }
 
-        public FcVirtualChip() {
-            initialize();
-        }
-
         public Registers registers;
         public byte[] memory;
 
+        public uint memorySize = ushort.MaxValue;
+
         public void initialize() {
             registers = new Registers();
-            memory = new byte[ushort.MaxValue];
+            memory = new byte[memorySize];
             state = State.Running;
         }
 
