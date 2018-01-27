@@ -289,7 +289,7 @@ namespace FcChip {
                     break;
                 }
                 case FcInternalOpCode.Call: {
-                    var pc = (ushort) registers.Get(FcRegister.C);
+                    var pc = (ushort) registers.Get(FcRegister.C) + 2; // offset after size of this instr
                     var sp = (ushort) registers.Get(FcRegister.S);
                     var dt = BitConverter.GetBytes(pc);
                     memory[memory.Length - sp - 1] = dt[1];
@@ -311,7 +311,7 @@ namespace FcChip {
                     registers.Set(FcRegister.S, (ushort) (sp - 2));
                     var retAddr = BitConverter.ToUInt16(dt, 0);
                     registers.Set(FcRegister.C, retAddr);
-                    readOffset = 2; // resume at instruction after caller, and call instructions have [2 bytes] of arguments
+                    readOffset = 0;
                     break;
                 }
             }

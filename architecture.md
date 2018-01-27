@@ -16,6 +16,7 @@ Word size: 16 bits
 - `BH` - 8-bit register that is the higher 8 bits of B
 - `MN` - 32-bit pseudo-register that contains {MN}
 - `C` - 16-bit program counter register
+- `R0`, `R1`, `R2`, `R3`, `R4`, `R5`, `R6`, `R7` - 16-bit data registers
 
 
 ## Instruction Set
@@ -40,6 +41,12 @@ Word size: 16 bits
 ### Memory
 - `ldr R` - load data in memory into R
 - `ldr R` - load data in memory into R
+
+### Stack
+- `push R` - push R to the stack (increments stack pointer by 2)
+- `pop R` - pop R from the stack (decrements stack pointer by 2)
+- `call L/A` - push the current program counter incremented by 2 (size of call instruction) to the stack and jump to address
+- `ret` - pop the program counter from the stack and jump
 
 ## Memory addressing
 
