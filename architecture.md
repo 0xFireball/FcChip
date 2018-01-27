@@ -3,9 +3,9 @@
 
 ## Architecture quick facts
 
-Endianness: Little Endian
-Word size: 16 bits
-Memory addressable with 32-bit addresses
+- Endianness: Little Endian
+- Word size: 16 bits
+- Memory addressable with 32-bit addresses
 
 ## Register Set
 
@@ -53,7 +53,7 @@ Memory addressable with 32-bit addresses
 
 ## Memory addressing
 
-When memory is accessed using the memory access instructions, the MN pseudo-register is used to address the location in memory.
+- When memory is accessed using the memory access instructions, the MN pseudo-register is used to address the location in memory.
 
 ## Simulated Components
 
