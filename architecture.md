@@ -61,3 +61,4 @@
 ## Suggested calling convention
 
 Use `r0` to `r7` for the first 8 parameters, then use the stack for additional parameters.
+Use the `r0` register for a 16-bit return value.
